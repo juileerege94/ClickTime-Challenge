@@ -1,0 +1,5 @@
+The timer on the left counts up till the event.
+The timer on the right counts down till 0.
+The input box gets disabled when either of the start buttons are clicked and gets enabled when either reset button is clicked so that
+the user cannot change the input midway between an operation.
+The start/pause buttons get disabled when the timers finish their counting.
