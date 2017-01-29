@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Stopwatch Timer</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <script >
+        var timerCountUp;
+        var timerCountDown;
+        var t1;
+        var t2;
+        var timer;
+        var timerSec;
+        var timerMin;
+        var timerHrs;
+        var timerDay;
+        function startTimer(buttonID)
+        {
+                var buttonValue = document.getElementById(buttonID).innerHTML.trim();
+                if(buttonValue.localeCompare("Start")==0)
+                {
+
+                    var inputTime = document.getElementById('timerValue').value
+                    if(!isNaN(inputTime) && inputTime!="")
+                    {
+                        document.getElementById("timerValue").disabled = true;
+                        document.getElementById(buttonID).innerHTML = 'Pause';
+                        document.getElementById(buttonID).className='glyphicon glyphicon-pause';
+                        timer = parseInt(inputTime);
+                        timerSec = timer
+                        if(document.getElementById(buttonID).value == 'initialStart')
+                        {
+                            if(buttonID == 'start1')
+                            {
+                                timerCountUp = 0;
+                            }
+                            else
+                            {
+                                timerCountDown = timerSec;
+                            }
+                        }
+                        if(buttonID == 'start1')
+                        {
+                            countUp();
+                        }
+                        else
+                        {
+                            countDown();
+                        }
+                    }
+                    else
+                    {
+                        alert("Please Enter time in seconds");
+                    }
+                }
+                else if(buttonValue.localeCompare("Pause")==0)
+                {
+                    document.getElementById(buttonID).innerHTML = 'Start';
+                    document.getElementById(buttonID).className='glyphicon glyphicon-play';
+                    document.getElementById(buttonID).value = 'pauseStart';
+                    if(buttonID == 'start1')
+                    {
+                        clearTimeout(t1);
+                    }
+                    else
+                    {
+                        clearTimeout(t2);
+                    }
+                }
+        };
+        function convertToDHHMMSS(timeInSec)
+        {
+            timerSec = timeInSec;
+            timerMin = Math.floor(timeInSec / 60);
+            timerHrs = Math.floor(timerMin / 60);
+            timerDay = Math.floor(timerHrs / 24);
+
+            timerHrs = timerHrs - (timerDay * 24);
+            timerMin = timerMin - (timerDay * 24 * 60) - (timerHrs * 60);
+            timerSec = timerSec - (timerDay * 24 * 60 * 60) - (timerHrs * 60 * 60) - (timerMin * 60);
+
+            return timerDay + ':' + timerHrs + ':' + timerMin + ':' + timerSec;
+        }
+        function countDown()
+        {
+            var time = convertToDHHMMSS(timerCountDown);
+
+            document.getElementById('countDownTimer').innerHTML = time;
+            if(timerCountDown > 0 && timerCountDown > 10)
+            {
+                timerCountDown--;
+                t2 = setTimeout("countDown()",1000);
+            }
+            else if(timerCountDown > 0 && timerCountDown <= 10)
+            {
+                timerCountDown--;
+                t2 = setTimeout("countDown()",1000);
+            }
+            else
+            {
+                document.getElementById("start2").disabled = true;
+            }
+        };
+        function countUp()
+        {
+            var time = convertToDHHMMSS(timerCountUp);
+            document.getElementById('countUpTimer').innerHTML = time;
+            if(timerCountUp < timer)
+            {
+                timerCountUp++;
+                t1 = setTimeout("countUp()",1000);
+            }
+            else
+            {
+                document.getElementById("start1").disabled = true;
+            }
+        };
+        function resetTimer(buttonID)
+        {
+            if(buttonID == 'reset1')
+            {
+                document.getElementById('start1').innerHTML = 'Start';
+                document.getElementById('start1').className='glyphicon glyphicon-play';
+                document.getElementById("timerValue").disabled = false;
+                clearTimeout(t1);
+                timerCountUp = 0;
+                document.getElementById('countUpTimer').innerHTML = timerCountUp;
+                document.getElementById('start1').value = 'initialStart';
+                document.getElementById('start1').innerHTML = 'Start';
+                time = convertToDHHMMSS(timerCountUp);
+                document.getElementById('countUpTimer').innerHTML = time;
+            }
+            else
+            {
+                document.getElementById('start2').innerHTML = 'Start';
+                document.getElementById('start2').className='glyphicon glyphicon-play';
+                document.getElementById("timerValue").disabled = false;
+                clearTimeout(t2);
+                timerCountDown = timer;
+                document.getElementById('countDownTimer').innerHTML = timerCountDown;
+                document.getElementById('start2').value = 'initialStart';
+                document.getElementById('start2').innerHTML = 'Start';
+                var time = convertToDHHMMSS(timerCountDown);
+                document.getElementById('countDownTimer').innerHTML = time;
+            }
+        };
+    </script>
+    <body>
+        <div class="jumbotron text-center" style="background-color:#00A3FF">
+            <h1 font-family="verdana">Perfect Timing Challenge for ClickTime</h1>
+        </div>
+        <span id="timer1">
+            <center><h3><b>Enter the time in seconds:</b></h3> <input type="text" id="timerValue"><br>
+                <img src="watch.gif" height="120px"></center>
+        </span>
+        <hr />
+        <div style="float:left; width:50%;">
+            <center><h3><b>Timer Counting Up</b></h3>
+                <h3>
+                    <span id="countUpTimer">
+
+                    </span>
+                </h3>
+                <br>
+                <button style="height:40px;width:100px" type="button" onclick="startTimer(this.id)" id="start1" value="initialStart" class="glyphicon glyphicon-play"> Start </button>
+                <button style="height:40px;width:100px" type="button" onclick="resetTimer(this.id)" id="reset1" class="glyphicon glyphicon-repeat"> Reset </button>
+            </center>
+        </div>
+
+        <div style="float:right; width:50%;">
+            <center><h3><b>Timer Counting Down</b></h3>
+                <h3>
+                    <span id="countDownTimer">
+
+                    </span>
+                </h3>
+                <br>
+                <button style="height:40px;width:100px" type="button" onclick="startTimer(this.id)" id="start2" value="initialStart" class="glyphicon glyphicon-play"> Start </button>
+                <button style="height:40px;width:100px" type="button" onclick="resetTimer(this.id)" id="reset2" class="glyphicon glyphicon-repeat"> Reset </button>
+            </center>
+        </div>
+    </body>
+</html>
